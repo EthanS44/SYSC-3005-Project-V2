@@ -76,6 +76,7 @@ CREATE TABLE Bills (
     date            DATE        NOT NULL,
     dollar_amount   INT         NOT NULL,
     is_paid         BOOLEAN     NOT NULL,
+    is_processed    BOOLEAN     DEFAULT FALSE,
     FOREIGN KEY (member_id)
         REFERENCES Members (member_id),
     FOREIGN KEY (staff_id)

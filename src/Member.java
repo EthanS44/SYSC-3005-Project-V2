@@ -187,7 +187,7 @@ public class Member {
                 System.out.println("Resting Heart Rate (bpm): " + restHeartBpm);
                 System.out.println("BMI: " + bmi);
             } else {
-                System.out.println("No health metrics found for member with ID " + memberId);
+                System.out.println("No health metrics to display.");
             }
 
         } catch (SQLException e) {
@@ -227,16 +227,21 @@ public class Member {
     public void displayGoals(int memberId){
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
-            String query = "select goal from goals where member_id = ?";
+            String query = "select * from goals where member_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, memberId);
 
             ResultSet resultSet = statement.executeQuery();
-            System.out.println("Goals for Member ID: " + memberId);
-            while (resultSet.next()) {
-                String goal = resultSet.getString("goal");
-                int goalId = resultSet.getInt("goal_id");
-                System.out.println(goalId + ". " + goal);
+            if (resultSet.next()) {
+                System.out.println("Goals for Member ID: " + memberId);
+                do {
+                    String goal = resultSet.getString("goal");
+                    int goalId = resultSet.getInt("goal_id");
+                    System.out.println(goalId + "- " + goal);
+                } while (resultSet.next());
+            }
+            else{
+                System.out.println("No goals to display.");
             }
 
         } catch (SQLException e) {
@@ -297,17 +302,23 @@ public class Member {
     public void displayAchievements(int memberId){
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
-            String query = "SELECT achievement FROM Achievements WHERE member_id = ?";
+            String query = "SELECT * FROM Achievements WHERE member_id = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, memberId);
 
-            try (ResultSet resultSet = statement.executeQuery()) {
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
                 System.out.println("Achievements for Member ID: " + memberId);
-                while (resultSet.next()) {
+                do {
                     String achievement = resultSet.getString("achievement");
-                    System.out.println("- " + achievement);
-                }
+                    int achievementId = resultSet.getInt("achievement_id");
+                    System.out.println(achievementId + "- " + achievement);
+                } while (resultSet.next());
             }
+            else{
+                System.out.println("No achievements to display.");
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -452,6 +463,33 @@ public class Member {
     }
 
     /**
+     * This method displays the classes a member is in.
+     * @param memberId
+     */
+    public void displayMemberClasses(int memberId) {
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            String query = "select * from classes where member1_id = ? or member2_id = ? or member3_id = ? or member4_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, memberId);
+            statement.setInt(2, memberId);
+            statement.setInt(3, memberId);
+            statement.setInt(4, memberId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int classId = resultSet.getInt("class_id");
+                int trainerId = resultSet.getInt("trainer_id");
+                String classDate = resultSet.getString("class_date");
+
+                System.out.println("Class ID: " + classId + ", Trainer ID: " + trainerId + ", Class Date: " + classDate);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * This method sets a class to full when all spots are taken up.
      * @param classId
      */
@@ -582,6 +620,99 @@ public class Member {
                 System.out.println("Room booked successfully.");
             } else {
                 System.out.println("Failed to book room.");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method displays the rooms a member has booked.
+     * @param memberId
+     */
+    public void displayMemberBookedRooms(int memberId) {
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            String query = "select * from rooms where member_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, memberId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int roomId = resultSet.getInt("room_id");
+                Time startTime = resultSet.getTime("start_time");
+                Time endTime = resultSet.getTime("end_time");
+                System.out.println("Room ID: " + roomId + ", Start Time: " + startTime + ", End Time: " + endTime);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method displays all sessions a member is a part of.
+     * @param memberId
+     */
+    public void displayEnrolledSessions(int memberId){
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            String query = "select * from sessions where member_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, memberId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int sessionId = resultSet.getInt("session_id");
+                int trainerId = resultSet.getInt("trainer_id");
+                Date sessionDate = resultSet.getDate("session_date");
+                System.out.println("Session ID: " + sessionId + ", Trainer ID: " + trainerId + ", Session Date: " + sessionDate);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method displays all unpaid bills for the member.
+     * @param memberId
+     */
+    public void displayUnpaidBills(int memberId){
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            String query = "select * from bills where member_id = ? and is_paid = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, memberId);
+            statement.setBoolean(2, false);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int billId = resultSet.getInt("bill_id");
+                int staffId = resultSet.getInt("staff_id");
+                String date = resultSet.getString("date");
+                int dollarAmount = resultSet.getInt("dollar_amount");
+
+                System.out.println("Bill ID: " + billId + ", Staff ID: " + staffId + ", Date: " + date + ", Amount: " + dollarAmount);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method pays a members bill.
+     * @param billId
+     */
+    public void payBill(int billId){
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            String query = "update bills set is_paid = true where bill_id = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, billId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+            } else {
+                System.out.println("No bill found with ID " + billId + ".");
             }
 
         } catch (SQLException e) {

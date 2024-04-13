@@ -6,7 +6,7 @@ public class Main {
         Model model = new Model();
         Member member = new Member();
         model.start();
-        //System.out.print(member.memberLogin("ethanstewart@gmail.com", "admin"));
+
 
     }
 }
