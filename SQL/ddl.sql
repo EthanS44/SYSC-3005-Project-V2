@@ -42,10 +42,13 @@ CREATE TABLE Classes (
     class_id        SERIAL      PRIMARY KEY,
     trainer_id      INTEGER     NOT NULL,
     class_date      DATE        NOT NULL,
-    start_time      TIMESTAMP   NOT NULL,
-    end_time        TIMESTAMP   NOT NULL,
+    start_time      TIME        NOT NULL,
+    end_time        TIME        NOT NULL,
     is_full         BOOLEAN     NOT NULL,
-    enrollment      INT         NOT NULL,
+    member1_id      INTEGER,
+    member2_id      INTEGER,
+    member3_id      INTEGER,
+    member4_id      INTEGER,
     FOREIGN KEY (trainer_id)
         REFERENCES Trainers (trainer_id)
 );
@@ -83,6 +86,7 @@ CREATE TABLE Routines (
     routine_id      SERIAL      PRIMARY KEY,
     member_id       INTEGER     NOT NULL,
     routine         TEXT        NOT NULL,
+    day_of_the_week VARCHAR,
     FOREIGN KEY (member_id)
         REFERENCES Members (member_id)
 );
@@ -93,19 +97,29 @@ CREATE TABLE Equipment (
     last_maintained DATE        NOT NULL
 );
 
-CREATE TABLE Days (
-    day_of_the_week DATE        PRIMARY KEY
-);
-
-CREATE TABLE Bookings (
-    booking_id      SERIAL      PRIMARY KEY,
+CREATE TABLE Sessions (
+    session_id      SERIAL      PRIMARY KEY,
     trainer_id      INTEGER     NOT NULL,
     member_id       INTEGER,
-    start_time      TIMESTAMP   NOT NULL,
-    end_time        TIMESTAMP   NOT NULL,
+    session_date    DATE        NOT NULL,
+    start_time      TIME        NOT NULL,
+    end_time        TIME        NOT NULL,
     is_booked       BOOLEAN     NOT NULL,
     FOREIGN KEY (trainer_id)
         REFERENCES Trainers (trainer_id),
     FOREIGN KEY (member_id)
         REFERENCES Members (member_id)
+);
+
+CREATE TABLE Rooms (
+    room_id         SERIAL      PRIMARY KEY,
+    member_id       INTEGER,
+    trainer_id      INTEGER,
+    start_time      TIME        NOT NULL,
+    end_time        TIME        NOT NULL,
+    is_booked       BOOLEAN     DEFAULT FALSE,
+    FOREIGN KEY (member_id)
+        REFERENCES Members(member_id),
+    FOREIGN KEY (trainer_id)
+        REFERENCES Trainers(trainer_id)
 );
