@@ -1,6 +1,5 @@
 Health and Fitness Club Management System (Project V2)
-
-Welcome to the Health and Fitness Club Management System project version 2 (V2) for SYSC 3005! This project is developed by Group 69.
+------------------------------------------------------
 
 Overview
 
