@@ -233,7 +233,7 @@ public class Trainer {
      * @param lastName
      * @return
      */
-    private int getMemberId(String firstName, String lastName) {
+    public int getMemberId(String firstName, String lastName) {
         try {
             Connection connection = DriverManager.getConnection(url, user, password);
             String query = "select member_id from members where first_name = ? and last_name = ?";
@@ -315,60 +315,6 @@ public class Trainer {
                 Time startTime = resultSet.getTime("start_time");
                 Time endTime = resultSet.getTime("end_time");
                 System.out.println("Room ID: " + roomId + ", Start Time: " + startTime + ", End Time: " + endTime);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * This method displays unProcessed bills.
-     */
-    public void displayUnprocessedBills() {
-        try {
-            Connection connection = DriverManager.getConnection(url, user, password);
-            String query = "select * from bills where is_processed = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setBoolean(1, false); // Filter for unprocessed bills
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                int billId = resultSet.getInt("bill_id");
-                int memberId = resultSet.getInt("member_id");
-                int staffId = resultSet.getInt("staff_id");
-                String date = resultSet.getString("date");
-                int dollarAmount = resultSet.getInt("dollar_amount");
-                boolean isPaid = resultSet.getBoolean("is_paid");
-
-                System.out.println("Bill ID: " + billId);
-                System.out.println("Member ID: " + memberId);
-                System.out.println("Staff ID: " + staffId);
-                System.out.println("Date: " + date);
-                System.out.println("Amount: " + dollarAmount);
-                System.out.println("Is Paid: " + isPaid);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * This method processes a bill.
-     * @param billId
-     */
-    public void processBill(int billId) {
-        try {
-            Connection connection = DriverManager.getConnection(url, user, password);
-            String query = "update bills set is_processed = ? where bill_id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setBoolean(1, true); // Set is_processed to TRUE
-            statement.setInt(2, billId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Bill with ID " + billId + " has been processed.");
-            } else {
-                System.out.println("No bill found with ID " + billId + ".");
             }
 
         } catch (SQLException e) {

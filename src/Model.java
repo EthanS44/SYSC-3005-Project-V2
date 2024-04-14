@@ -755,9 +755,7 @@ public class Model {
         System.out.println("2. Equipment");
         System.out.println("3. Classes");
         System.out.println("4. Billing");
-        System.out.println("5. Sessions");
-        System.out.println("6. Training Sessions");
-        System.out.print("Enter (1, 2, 3, 4, 5, 6, 0): ");
+        System.out.print("Enter (1, 2, 3, 4, 0): ");
 
         int choice = scanner.nextInt();
         scanner.nextLine();
@@ -873,14 +871,161 @@ public class Model {
                 }
                 break;
             case 3:
+                System.out.println("Select option:");
+                System.out.println("1. Create Class");
+                System.out.println("2. Remove Class");
+                System.out.println("3. Display Classes");
+                System.out.println("4. Update Class");
 
+                System.out.print("Enter (1, 2, 3, 4, 0): ");
+                int choice3 = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("\n*-------------------------------------------------------------*\n");
+                switch(choice3) {
+                    case 1:
+                        System.out.print("Enter trainers first name: ");
+                        String firstName = scanner.nextLine();
+
+                        System.out.print("Enter trainers last name: ");
+                        String lastName = scanner.nextLine();
+
+                        int trainerId = staff.getTrainerId(firstName, lastName);
+
+                        System.out.print("Enter class date (YYYY-MM-DD): ");
+                        String classDate = scanner.nextLine();
+                        java.sql.Date formattedClassDate = convertDate(classDate);
+
+                        System.out.print("Enter start time (HH:mm:ss): ");
+                        String startTime = scanner.nextLine();
+                        java.sql.Time formattedStartTime = convertTime(startTime);
+
+                        System.out.print("Enter end time (HH:mm:ss): ");
+                        String endTime = scanner.nextLine();
+                        java.sql.Time formattedEndTime = convertTime(endTime);
+
+                        staff.createClass(trainerId, formattedClassDate,formattedStartTime,formattedEndTime);
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 2:
+                        staff.displayClasses();
+                        System.out.print("Enter the id of the class to remove, or -1 for none: ");
+                        int classId = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (classId == -1){
+                            System.out.println("\n*-------------------------------------------------------------*\n");
+                            handleStaffFunctions();
+                        }
+
+                        staff.removeClass(classId);
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 3:
+                        staff.displayClasses();
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 4:
+                        staff.displayClasses();
+                        System.out.print("Enter the id of the class to update, or -1 for none: ");
+                        int classId2 = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (classId2 == -1){
+                            System.out.println("\n*-------------------------------------------------------------*\n");
+                            handleStaffFunctions();
+                        }
+
+                        System.out.print("Enter new class date (YYYY-MM-DD): ");
+                        String classDate2 = scanner.nextLine();
+                        java.sql.Date formattedClassDate2 = convertDate(classDate2);
+
+                        System.out.print("Enter new start time (HH:mm:ss): ");
+                        String startTime2 = scanner.nextLine();
+                        java.sql.Time formattedStartTime2 = convertTime(startTime2);
+
+                        System.out.print("Enter new end time (HH:mm:ss): ");
+                        String endTime2 = scanner.nextLine();
+                        java.sql.Time formattedEndTime2 = convertTime(endTime2);
+
+                        staff.updateClassTime(classId2, formattedClassDate2,formattedStartTime2, formattedEndTime2);
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 0:
+                        System.exit(1);
+                    default:
+                        System.out.println("Invalid choice");
+                        handleStaffFunctions();
+                        break;
+                }
                 break;
             case 4:
+                System.out.println("Select option:");
+                System.out.println("1. Create Bill");
+                System.out.println("2. Display Bills");
+                System.out.println("3. Process Bill");
+
+                System.out.print("Enter (1, 2, 3, 0): ");
+                int choice4 = scanner.nextInt();
+                scanner.nextLine();
+                System.out.println("\n*-------------------------------------------------------------*\n");
+                switch(choice4) {
+                    case 1:
+                        System.out.print("Enter members first name: ");
+                        String firstName = scanner.nextLine();
+
+                        System.out.print("Enter members last name: ");
+                        String lastName = scanner.nextLine();
+
+                        int memberId = trainer.getMemberId(firstName, lastName);
+
+                        System.out.print("Enter bill date (YYYY-MM-DD): ");
+                        String billDate = scanner.nextLine();
+                        java.sql.Date formattedBillDate = convertDate(billDate);
+
+                        System.out.print("Enter dollar amount: ");
+                        int dollarAmount = scanner.nextInt();
+                        scanner.nextLine();
+
+                        staff.createBill(memberId, currentStaffId, formattedBillDate, dollarAmount);
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 2:
+                        staff.displayBills();
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+                    case 3:
+                        staff.displayUnprocessedBills();
+
+                        System.out.print("Enter the id of the bill to process, or -1 for none: ");
+                        int billId = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (billId == -1){
+                            System.out.println("\n*-------------------------------------------------------------*\n");
+                            handleStaffFunctions();
+                        }
+
+                        staff.processBill(billId);
+
+                        System.out.println("\n*-------------------------------------------------------------*\n");
+                        handleStaffFunctions();
+                        break;
+
+                    case 0:
+                        System.exit(1);
+                    default:
+                        System.out.println("Invalid choice");
+                        handleStaffFunctions();
+                        break;
+                }
                 break;
-            case 5:
-                break;
-            case 6:
-                break;
+
             default:
                 System.out.println("Invalid choice");
                 handleMemberFunctions();
